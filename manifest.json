@@ -1,0 +1,16 @@
+{
+
+  "manifest_version": 2,
+  "name": "Imperial2Metric",
+  "version": "1.0",
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["imperial-to-metric.js"],
+      "all_frames": true,
+      "run_at": "document_end"
+    }
+  ]
+
+}
