@@ -1,55 +1,89 @@
-// region conversions
-function miles_to_km(miles) {
-    return miles * 1.609344;
+// region utils
+String.prototype.format = function() {
+  a = this;
+  for (k in arguments) {
+    a = a.replace("{" + k + "}", arguments[k])
+  }
+  return a
 }
-function foot_to_meters(feet) {
-    return feet * 0.348;
+
+function format_length(str, meters) {
+    // mm
+    if (meters < 0.1) {
+        return "{0} ({1} {2})".format(str, Math.round(meters * 1000), "mm");
+    }
+    // cm
+    else if (meters < 0) {
+        return "{0} ({1} {2})".format(str, Math.round(meters * 100), "cm");
+    }
+    // km
+    else if (meters > 10000) {
+        return "{0} ({1} {2})".format(str, Math.round(meters / 1000), "km");
+    }
+    // m
+    else {
+        return "{0} ({1} {2})".format(str, Math.round(meters), "m");
+    }
+}
+// endregion
+
+// region conversions
+function inches_to_meters(inch) {
+    return inch * 0.0254;
+}
+function foot_to_meters(foot) {
+    return foot * 0.3048;
+}
+function yard_foot_to_meters(yard){
+    return yard * 0.9144;
+}
+function miles_to_meters(miles) {
+    return miles * 1609.3;
 }
 // endregion
 
 // region regexps
 var feet_matches = [
-    "\\d+ feet",
-    "\\d+\\.\\d+ feet",
-    "\\d+\\.\\d+ foot",
-    "\\d+ foot",
-    "\\d+\\.\\d+ ft",
-    "\\d+ ft"
+    "\\d+.?feet",
+    "\\d+\\.\\d+.?feet",
+    "\\d+\\.\\d+.?foot",
+    "\\d+.?foot",
+    "\\d+\\.\\d+.?ft",
+    "\\d+.?ft"
 ];
 var feet_regexp = new RegExp(feet_matches.join('|'), "gi");
 
 var miles_matches = [
-    "\\d+\\.\\d+ mile",
-    "\\d+ mile",
-    "\\d+,\\d+ miles"
+    "\\d+\\.\\d+.?miles",
+    "\\d+,\\d+.?miles",
+    "\\d+.?miles",
+    "\\d+\\.\\d+.?mile",
+    "\\d+,\\d+.?mile",
+    "\\d+.?mile"
 ]
 var miles_regexp = new RegExp(miles_matches.join('|'), "gi");
 // endregion
 
 function replace(node) {
-    // feet -> m
+    // feet
     node.nodeValue = node.nodeValue.replace(feet_regexp, function(str) {
         var val = str.match(/\d+\.\d+|\d+/g);
         var meters = foot_to_meters(val[0]);
-        if (meters < 1) {
-            return meters + "m";
-        }
-        else return Math.round(meters) + " m";
+        return format_length(str, meters);
     })
-    // miles -> km
+    // miles
     node.nodeValue = node.nodeValue.replace(miles_regexp, function(str) {
-        str = str.replace(',', '');
-        var val = str.match(/\d+\.\d+|\d+/g);
-        var kilometers = miles_to_km(val[0]);
-        if (kilometers < 2) {
-            return Math.round(kilometers * 1000) + " m";
-        }
-        else return Math.round(kilometers) + "km";
+        var escaped_str = str.replace(',', '');
+        var val = escaped_str.match(/\d+\.\d+|\d+/g);
+        var meters = miles_to_meters(val[0]);
+        return format_length(str, meters);
     })
-    // mph -> km/h
-    node.nodeValue = node.nodeValue.replace(/\d+ mph/gi, function(str) {
+
+    // mph
+    node.nodeValue = node.nodeValue.replace(/\d+.?mph/gi, function(str) {
         var val = str.match(/\d+/g);
-        return Math.round(miles_to_km(val[0])) + " km/h";
+        var meters = miles_to_meters(val[0]);
+        return "{0} ({1} {2})".format(str, Math.round(meters / 1000), "km/h");
     })
 }
 
