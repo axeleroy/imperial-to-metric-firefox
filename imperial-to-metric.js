@@ -49,7 +49,7 @@ var inch_matches = [
     "\\d+\\.\\d+.?inch",
     "\\d+.?inch",
     "\\d+\\.\\d+.?in",
-    "\\d+.?in"
+    "\\d+.?in\\b"
 ];
 var inch_regexp = new RegExp(inch_matches.join('|'), "gi");
 
@@ -86,6 +86,14 @@ var miles_matches = [
     "\\d+.?ml"
 ]
 var miles_regexp = new RegExp(miles_matches.join('|'), "gi");
+
+var fahrenheit_matches = [
+    "-?\\d+.?°F",
+    "-?\\d+\\.\\d+.?°F",
+    "−?\\d+.?°F",
+    "−?\\d+\\.\\d+.?°F"
+];
+fahrenheit_regexp = new RegExp(fahrenheit_matches.join('|'), "gi");
 // endregion
 
 function replace(node) {
@@ -120,6 +128,14 @@ function replace(node) {
         var val = str.match(/\d+/g);
         var meters = miles_to_meters(val[0]);
         return "{0} ({1} {2})".format(str, Math.round(meters / 1000), "km/h");
+    })
+
+    // °F
+    node.nodeValue = node.nodeValue.replace(fahrenheit_regexp, function(str) {
+        var escaped_str = str.replace('−', '-');
+        var val = escaped_str.match(/-?\d+|-?\d+.\d/g);
+        var celsius = (val[0] - 32) * (5 / 9);
+        return "{0} ({1} {2})".format(str, Math.round(celsius), "°C");
     })
 }
 
