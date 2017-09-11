@@ -13,7 +13,7 @@ function format_length(str, meters) {
         return "{0} ({1} {2})".format(str, Math.round(meters * 1000), "mm");
     }
     // cm
-    else if (meters < 0) {
+    else if (meters < 1) {
         return "{0} ({1} {2})".format(str, Math.round(meters * 100), "cm");
     }
     // km
