@@ -68,89 +68,89 @@ function ton_to_gram(ton) {
 
 // region regexps
 var inch_matches = [
-    "\\d+.?inches",
-    "\\d+\\.\\d+.?inches",
-    "\\d+\\.\\d+.?inch",
-    "\\d+.?inch",
-    "\\d+\\.\\d+.?in",
-    "\\d+.?in\\b"
+    "\\d+[\\s|-]?inches",
+    "\\d+\\.\\d+[\\s|-]?inches",
+    "\\d+\\.\\d+[\\s|-]?inch",
+    "\\d+[\\s|-]?inch",
+    "\\d+\\.\\d+[\\s|-]?in",
+    "\\d+[\\s|-]?in\\b"
 ];
 var inch_regexp = new RegExp(inch_matches.join('|'), "gi");
 
 var feet_matches = [
-    "\\d+.?feet",
-    "\\d+\\.\\d+.?feet",
-    "\\d+\\.\\d+.?foot",
-    "\\d+.?foot",
-    "\\d+\\.\\d+.?ft",
-    "\\d+.?ft"
+    "\\d+[\\s|-]?feet",
+    "\\d+\\.\\d+[\\s|-]?feet",
+    "\\d+\\.\\d+[\\s|-]?foot",
+    "\\d+[\\s|-]?foot",
+    "\\d+\\.\\d+[\\s|-]?ft",
+    "\\d+[\\s|-]?ft"
 ];
 var feet_regexp = new RegExp(feet_matches.join('|'), "gi");
 
 var yard_matches = [
-    "\\d+.?yards",
-    "\\d+\\.\\d+.?yards",
-    "\\d+\\.\\d+.?yard",
-    "\\d+.?yard",
-    "\\d+\\.\\d+.?yds",
-    "\\d+.?yds",
-    "\\d+\\.\\d+.?yd",
-    "\\d+.?yd"
+    "\\d+[\\s|-]?yards",
+    "\\d+\\.\\d+[\\s|-]?yards",
+    "\\d+\\.\\d+[\\s|-]?yard",
+    "\\d+[\\s|-]?yard",
+    "\\d+\\.\\d+[\\s|-]?yds",
+    "\\d+[\\s|-]?yds",
+    "\\d+\\.\\d+[\\s|-]?yd",
+    "\\d+[\\s|-]?yd"
 ];
 var yard_regexp = new RegExp(yard_matches.join('|'), "gi");
 
 var miles_matches = [
-    "\\d+\\.\\d+.?miles",
-    "\\d+,\\d+.?miles",
-    "\\d+.?miles",
-    "\\d+\\.\\d+.?mile",
-    "\\d+,\\d+.?mile",
-    "\\d+.?mile",
-    "\\d+\\.\\d+.?ml",
-    "\\d+.?ml"
+    "\\d+\\.\\d+[\\s|-]?miles",
+    "\\d+,\\d+[\\s|-]?miles",
+    "\\d+[\\s|-]?miles",
+    "\\d+\\.\\d+[\\s|-]?mile",
+    "\\d+,\\d+[\\s|-]?mile",
+    "\\d+[\\s|-]?mile",
+    "\\d+\\.\\d+[\\s|-]?ml",
+    "\\d+[\\s|-]?ml"
 ]
 var miles_regexp = new RegExp(miles_matches.join('|'), "gi");
 
 var fahrenheit_matches = [
-    "-?\\d+.?°F",
-    "-?\\d+\\.\\d+.?°F",
-    "−?\\d+.?°F",
-    "−?\\d+\\.\\d+.?°F"
+    "-?\\d+[\\s|-]?°F",
+    "-?\\d+\\.\\d+[\\s|-]?°F",
+    "−?\\d+[\\s|-]?°F",
+    "−?\\d+\\.\\d+[\\s|-]?°F"
 ];
 fahrenheit_regexp = new RegExp(fahrenheit_matches.join('|'), "gi");
 
 var ounce_matches = [
-    "\\d+\\.\\d+.?ounces",
-    "\\d+.?ounces",
-    "\\d+\\.\\d+.?ounce",
-    "\\d+.?ounce",
-    "\\d+\\.\\d+.?oz\\b",
-    "\\d+.?oz\\b"
+    "\\d+\\.\\d+[\\s|-]?ounces",
+    "\\d+[\\s|-]?ounces",
+    "\\d+\\.\\d+[\\s|-]?ounce",
+    "\\d+[\\s|-]?ounce",
+    "\\d+\\.\\d+[\\s|-]?oz\\b",
+    "\\d+[\\s|-]?oz\\b"
 ];
 ounce_regexp = new RegExp(ounce_matches.join('|'), "gi");
 
 var pound_matches = [
-    "\\d+\\.\\d+.?pounds",
-    "\\d+.?pounds",
-    "\\d+,\\d+.?pounds",
-    "\\d+\\.\\d+.?pound",
-    "\\d+.?pound",
-    "\\d+,\\d+.?pound",
-    "\\d+\\.\\d+.?lbs",
-    "\\d+.?lbs",
-    "\\d+,\\d+.?lbs",
-    "\\d+\\.\\d+.?lb",
-    "\\d+.?lb"
+    "\\d+\\.\\d+[\\s|-]?pounds",
+    "\\d+[\\s|-]?pounds",
+    "\\d+,\\d+[\\s|-]?pounds",
+    "\\d+\\.\\d+[\\s|-]?pound",
+    "\\d+[\\s|-]?pound",
+    "\\d+,\\d+[\\s|-]?pound",
+    "\\d+\\.\\d+[\\s|-]?lbs",
+    "\\d+[\\s|-]?lbs",
+    "\\d+,\\d+[\\s|-]?lbs",
+    "\\d+\\.\\d+[\\s|-]?lb",
+    "\\d+[\\s|-]?lb"
 ];
 pound_regexp = new RegExp(pound_matches.join('|'), "gi");
 
 var ton_matches = [
-    "\\d+\\.\\d+.?tons",
-    "\\d+.?tons",
-    "\\d+\\.\\d+.?ton\\b",
-    "\\d+.?ton\\b",
-    "\\d+\\.\\d+.?t\\b",
-    "\\d+.?t\\b"
+    "\\d+\\.\\d+[\\s|-]?tons",
+    "\\d+[\\s|-]?tons",
+    "\\d+\\.\\d+[\\s|-]?ton\\b",
+    "\\d+[\\s|-]?ton\\b",
+    "\\d+\\.\\d+[\\s|-]?t\\b",
+    "\\d+[\\s|-]?t\\b"
 ];
 ton_regexp = new RegExp(ton_matches.join('|'), "gi");
 // endregion
@@ -183,7 +183,7 @@ function replace(node) {
     })
 
     // mph
-    node.nodeValue = node.nodeValue.replace(/\d+.?mph/gi, function(str) {
+    node.nodeValue = node.nodeValue.replace(/\d+[\\s|-]?mph/gi, function(str) {
         var val = str.match(/\d+/g);
         var meters = miles_to_meters(val[0]);
         return "{0} ({1} {2})".format(str, Math.round(meters / 1000), "km/h");
