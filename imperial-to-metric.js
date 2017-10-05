@@ -1,11 +1,28 @@
+// region regexps
+var regex_template = function(units) {
+    return new RegExp("(-?\\d+(?:,?\\d+)*(?:\\.?\\d+)?[\\s−]?(?:" + units + "))", "gi");
+};
+var num_regex = new RegExp(/(-?\d+(?:,?\d+)*(?:\.?\d+)?)/gi);
+
+var inch_regexp = regex_template("inches|inch|in\\b");
+var feet_regexp = regex_template("feet|foot|fts|ft\\b");
+var yard_regexp = regex_template("yards|yard|yds|yd\\b");
+var miles_regexp = regex_template("miles|mile|mi\\b");
+var ounce_regexp = regex_template("ounces|ounce|oz\\b");
+var pound_regexp = regex_template("pounds|pound|lbs|lb\\b");
+var ton_regexp = regex_template("tons|ton\\b|t\\b");
+var mph_regexp = regex_template("mph");
+var fahrenheit_regexp = regex_template("°F");
+// endregion
+
 // region utils
 String.prototype.format = function() {
-  a = this;
-  for (k in arguments) {
-    a = a.replace("{" + k + "}", arguments[k])
+  var a = this;
+  for (var k in arguments) {
+    a = a.replace("{" + k + "}", arguments[k]);
   }
-  return a
-}
+  return a;
+};
 
 function format_length(str, meters) {
     // mm
@@ -39,6 +56,10 @@ function format_weight(str, gram) {
         return "{0} ({1} {2})".format(str, Math.round(gram), "g");
     }
 }
+
+function getValue(str) {
+    return str.match(num_regex)[0].replace(',', '');
+}
 // endregion
 
 // region conversions
@@ -66,158 +87,75 @@ function ton_to_gram(ton) {
 }
 // endregion
 
-// region regexps
-var inch_matches = [
-    "\\d+[\\s|-]?inches",
-    "\\d+\\.\\d+[\\s|-]?inches",
-    "\\d+\\.\\d+[\\s|-]?inch",
-    "\\d+[\\s|-]?inch",
-    "\\d+\\.\\d+[\\s|-]?in",
-    "\\d+[\\s|-]?in\\b"
-];
-var inch_regexp = new RegExp(inch_matches.join('|'), "gi");
-
-var feet_matches = [
-    "\\d+[\\s|-]?feet",
-    "\\d+\\.\\d+[\\s|-]?feet",
-    "\\d+\\.\\d+[\\s|-]?foot",
-    "\\d+[\\s|-]?foot",
-    "\\d+\\.\\d+[\\s|-]?ft",
-    "\\d+[\\s|-]?ft"
-];
-var feet_regexp = new RegExp(feet_matches.join('|'), "gi");
-
-var yard_matches = [
-    "\\d+[\\s|-]?yards",
-    "\\d+\\.\\d+[\\s|-]?yards",
-    "\\d+\\.\\d+[\\s|-]?yard",
-    "\\d+[\\s|-]?yard",
-    "\\d+\\.\\d+[\\s|-]?yds",
-    "\\d+[\\s|-]?yds",
-    "\\d+\\.\\d+[\\s|-]?yd",
-    "\\d+[\\s|-]?yd"
-];
-var yard_regexp = new RegExp(yard_matches.join('|'), "gi");
-
-var miles_matches = [
-    "\\d+\\.\\d+[\\s|-]?miles",
-    "\\d+,\\d+[\\s|-]?miles",
-    "\\d+[\\s|-]?miles",
-    "\\d+\\.\\d+[\\s|-]?mile",
-    "\\d+,\\d+[\\s|-]?mile",
-    "\\d+[\\s|-]?mile",
-    "\\d+\\.\\d+[\\s|-]?ml",
-    "\\d+[\\s|-]?ml"
-]
-var miles_regexp = new RegExp(miles_matches.join('|'), "gi");
-
-var fahrenheit_matches = [
-    "-?\\d+[\\s|-]?°F",
-    "-?\\d+\\.\\d+[\\s|-]?°F",
-    "−?\\d+[\\s|-]?°F",
-    "−?\\d+\\.\\d+[\\s|-]?°F"
-];
-fahrenheit_regexp = new RegExp(fahrenheit_matches.join('|'), "gi");
-
-var ounce_matches = [
-    "\\d+\\.\\d+[\\s|-]?ounces",
-    "\\d+[\\s|-]?ounces",
-    "\\d+\\.\\d+[\\s|-]?ounce",
-    "\\d+[\\s|-]?ounce",
-    "\\d+\\.\\d+[\\s|-]?oz\\b",
-    "\\d+[\\s|-]?oz\\b"
-];
-ounce_regexp = new RegExp(ounce_matches.join('|'), "gi");
-
-var pound_matches = [
-    "\\d+\\.\\d+[\\s|-]?pounds",
-    "\\d+[\\s|-]?pounds",
-    "\\d+,\\d+[\\s|-]?pounds",
-    "\\d+\\.\\d+[\\s|-]?pound",
-    "\\d+[\\s|-]?pound",
-    "\\d+,\\d+[\\s|-]?pound",
-    "\\d+\\.\\d+[\\s|-]?lbs",
-    "\\d+[\\s|-]?lbs",
-    "\\d+,\\d+[\\s|-]?lbs",
-    "\\d+\\.\\d+[\\s|-]?lb",
-    "\\d+[\\s|-]?lb"
-];
-pound_regexp = new RegExp(pound_matches.join('|'), "gi");
-
-var ton_matches = [
-    "\\d+\\.\\d+[\\s|-]?tons",
-    "\\d+[\\s|-]?tons",
-    "\\d+\\.\\d+[\\s|-]?ton\\b",
-    "\\d+[\\s|-]?ton\\b",
-    "\\d+\\.\\d+[\\s|-]?t\\b",
-    "\\d+[\\s|-]?t\\b"
-];
-ton_regexp = new RegExp(ton_matches.join('|'), "gi");
+// region replaceFunctions
+// inches
+function replaceInches(str) {
+    var meters = inches_to_meters(getValue(str));
+    return format_length(str, meters);
+}
+// feet
+function replaceFeet(str) {
+    var meters = foot_to_meters(getValue(str));
+    return format_length(str, meters);
+}
+// yard
+function replaceYard(str) {
+    var meters = yard_to_meters(getValue(str));
+    return format_length(str, meters);
+}
+// miles
+function replaceMiles(str) {
+    var meters = miles_to_meters(getValue(str));
+    return format_length(str, meters);
+}
+// mph
+function replaceMph(str) {
+    var meters = miles_to_meters(getValue(str));
+    return "{0} ({1} {2})".format(str, Math.round(meters / 1000), "km/h");
+}
+// °F
+function replaceFahrenheit(str) {
+    var escaped_str = str.replace('−', '-').replace(',', '');
+    var val = escaped_str.match(num_regex);
+    var celsius = (val[0] - 32) * (5 / 9);
+    return "{0} ({1} {2})".format(str, Math.round(celsius), "°C");
+}
+// ounce
+function replaceOunce(str) {
+    var grams = ounce_to_gram(getValue(str));
+    return format_weight(str, grams);
+}
+// pound
+function replacePound(str) {
+    var grams = pound_to_gram(getValue(str));
+    return format_weight(str, grams);
+}
+// ton
+function replaceTon(str) {
+    var grams = ton_to_gram(getValue(str));
+    return format_weight(str, grams);
+}
 // endregion
 
 function replace(node) {
     // inches
-    node.nodeValue = node.nodeValue.replace(inch_regexp, function(str) {
-            var val = str.match(/\d+\.\d+|\d+/g);
-            var meters = inches_to_meters(val[0]);
-            return format_length(str, meters);
-    })
+    node.nodeValue = inch_regexp[Symbol.replace](node.nodeValue, replaceInches);
     // feet
-    node.nodeValue = node.nodeValue.replace(feet_regexp, function(str) {
-        var val = str.match(/\d+\.\d+|\d+/g);
-        var meters = foot_to_meters(val[0]);
-        return format_length(str, meters);
-    })
+    node.nodeValue = feet_regexp[Symbol.replace](node.nodeValue, replaceFeet);
     // yard
-    node.nodeValue = node.nodeValue.replace(yard_regexp, function(str) {
-        var val = str.match(/\d+\.\d+|\d+/g);
-        var meters = yard_to_meters(val[0]);
-        return format_length(str, meters);
-    })
+    node.nodeValue = yard_regexp[Symbol.replace](node.nodeValue, replaceYard);
     // miles
-    node.nodeValue = node.nodeValue.replace(miles_regexp, function(str) {
-        var escaped_str = str.replace(',', '');
-        var val = escaped_str.match(/\d+\.\d+|\d+/g);
-        var meters = miles_to_meters(val[0]);
-        return format_length(str, meters);
-    })
-
+    node.nodeValue = miles_regexp[Symbol.replace](node.nodeValue, replaceMiles);
     // mph
-    node.nodeValue = node.nodeValue.replace(/\d+[\\s|-]?mph/gi, function(str) {
-        var val = str.match(/\d+/g);
-        var meters = miles_to_meters(val[0]);
-        return "{0} ({1} {2})".format(str, Math.round(meters / 1000), "km/h");
-    })
-
+    node.nodeValue = mph_regexp[Symbol.replace](node.nodeValue, replaceMph);
     // °F
-    node.nodeValue = node.nodeValue.replace(fahrenheit_regexp, function(str) {
-        var escaped_str = str.replace('−', '-');
-        var val = escaped_str.match(/-?\d+|-?\d+.\d/g);
-        var celsius = (val[0] - 32) * (5 / 9);
-        return "{0} ({1} {2})".format(str, Math.round(celsius), "°C");
-    })
-
+    node.nodeValue = fahrenheit_regexp[Symbol.replace](node.nodeValue, replaceFahrenheit);
     // ounce
-    node.nodeValue = node.nodeValue.replace(ounce_regexp, function(str) {
-        var escaped_str = str.replace(',', '');
-        var val = escaped_str.match(/\d+\.\d+|\d+/g);
-        var grams = ounce_to_gram(val[0]);
-        return format_weight(str, grams);
-    })
+    node.nodeValue = ounce_regexp[Symbol.replace](node.nodeValue, replaceOunce);
     // pound
-    node.nodeValue = node.nodeValue.replace(pound_regexp, function(str) {
-        var escaped_str = str.replace(',', '');
-        var val = escaped_str.match(/\d+\.\d+|\d+/g);
-        var grams = pound_to_gram(val[0]);
-        return format_weight(str, grams);
-    })
+    node.nodeValue = pound_regexp[Symbol.replace](node.nodeValue, replacePound);
     // ton
-    node.nodeValue = node.nodeValue.replace(ton_regexp, function(str) {
-        var escaped_str = str.replace(',', '');
-        var val = escaped_str.match(/\d+\.\d+|\d+/g);
-        var grams = ton_to_gram(val[0]);
-        return format_weight(str, grams);
-    })
+    node.nodeValue = ton_regexp[Symbol.replace](node.nodeValue, replaceTon);
 }
 
 function replacePattern(node) {

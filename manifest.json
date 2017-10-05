@@ -7,9 +7,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["imperial-to-metric.js"],
-      "all_frames": true,
-      "run_at": "document_end"
+      "exclude_globs":  ["*://*.google.*/*"],
+      "js": ["imperial-to-metric.js"]
     }
   ]
 
