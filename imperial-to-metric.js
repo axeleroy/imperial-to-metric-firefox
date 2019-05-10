@@ -1,24 +1,25 @@
 // region regexps
-var regex_template = function(units) {
-    return new RegExp("(-?\\d+(?:,?\\d+)*(?:\\.?\\d+)?[\\s−]?(?:" + units + "))", "gi");
+const regex_template = function (units) {
+    return new RegExp(
+        "(-?\\d+(?:,?\\d+)*(?:\\.?\\d+)?[\\s−]?(?:" + units + "))", "gi");
 };
-var num_regex = new RegExp(/(-?\d+(?:,?\d+)*(?:\.?\d+)?)/gi);
+const num_regex = new RegExp(/(-?\d+(?:,?\d+)*(?:\.?\d+)?)/gi);
 
-var inch_regexp = regex_template("inches|inch|in\\b");
-var feet_regexp = regex_template("feet|foot|fts|ft\\b");
-var yard_regexp = regex_template("yards|yard|yds|yd\\b");
-var miles_regexp = regex_template("miles|mile|mi\\b");
-var ounce_regexp = regex_template("ounces|ounce|oz\\b");
-var pound_regexp = regex_template("pounds|pound|lbs|lb\\b");
-var ton_regexp = regex_template("tons|ton\\b|t\\b");
-var mph_regexp = regex_template("mph");
-var fahrenheit_regexp = regex_template("°F");
+const inch_regexp = regex_template("inches|inch|in\\b");
+const feet_regexp = regex_template("feet|foot|fts|ft\\b");
+const yard_regexp = regex_template("yards|yard|yds|yd\\b");
+const miles_regexp = regex_template("miles|mile|mi\\b");
+const ounce_regexp = regex_template("ounces|ounce|oz\\b");
+const pound_regexp = regex_template("pounds|pound|lbs|lb\\b");
+const ton_regexp = regex_template("tons|ton\\b|t\\b");
+const mph_regexp = regex_template("mph");
+const fahrenheit_regexp = regex_template("°F");
 // endregion
 
 // region utils
 String.prototype.format = function() {
-  var a = this;
-  for (var k in arguments) {
+    let a = this;
+    for (let k in arguments) {
     a = a.replace("{" + k + "}", arguments[k]);
   }
   return a;
@@ -90,49 +91,49 @@ function ton_to_gram(ton) {
 // region replaceFunctions
 // inches
 function replaceInches(str) {
-    var meters = inches_to_meters(getValue(str));
+    const meters = inches_to_meters(getValue(str));
     return format_length(str, meters);
 }
 // feet
 function replaceFeet(str) {
-    var meters = foot_to_meters(getValue(str));
+    const meters = foot_to_meters(getValue(str));
     return format_length(str, meters);
 }
 // yard
 function replaceYard(str) {
-    var meters = yard_to_meters(getValue(str));
+    const meters = yard_to_meters(getValue(str));
     return format_length(str, meters);
 }
 // miles
 function replaceMiles(str) {
-    var meters = miles_to_meters(getValue(str));
+    const meters = miles_to_meters(getValue(str));
     return format_length(str, meters);
 }
 // mph
 function replaceMph(str) {
-    var meters = miles_to_meters(getValue(str));
+    const meters = miles_to_meters(getValue(str));
     return "{0} ({1} {2})".format(str, Math.round(meters / 1000), "km/h");
 }
 // °F
 function replaceFahrenheit(str) {
-    var escaped_str = str.replace('−', '-').replace(',', '');
-    var val = escaped_str.match(num_regex);
-    var celsius = (val[0] - 32) * (5 / 9);
+    const escaped_str = str.replace('−', '-').replace(',', '');
+    const val = escaped_str.match(num_regex);
+    const celsius = (val[0] - 32) * (5 / 9);
     return "{0} ({1} {2})".format(str, Math.round(celsius), "°C");
 }
 // ounce
 function replaceOunce(str) {
-    var grams = ounce_to_gram(getValue(str));
+    const grams = ounce_to_gram(getValue(str));
     return format_weight(str, grams);
 }
 // pound
 function replacePound(str) {
-    var grams = pound_to_gram(getValue(str));
+    const grams = pound_to_gram(getValue(str));
     return format_weight(str, grams);
 }
 // ton
 function replaceTon(str) {
-    var grams = ton_to_gram(getValue(str));
+    const grams = ton_to_gram(getValue(str));
     return format_weight(str, grams);
 }
 // endregion
@@ -158,14 +159,12 @@ function replace(node) {
     node.nodeValue = ton_regexp[Symbol.replace](node.nodeValue, replaceTon);
 }
 
-function replacePattern(node) {
-    if(node.nodeType === Node.TEXT_NODE) {
-        replace(node);
-    } else if(node.nodeType === Node.ELEMENT_NODE) {
-        for(var i = 0, num = node.childNodes.length; i < num; ++i) {
-            replacePattern(node.childNodes[i]);
-        }
+const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+
+// Go through all nodes
+while (walker.nextNode()) {
+    // Filter out empty nodes
+    if (walker.currentNode.nodeValue.trim()) {
+        replace(walker.currentNode)
     }
 }
-
-replacePattern(document.body);
